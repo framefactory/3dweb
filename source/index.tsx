@@ -15,6 +15,6 @@ import SpinningCube from "./scenes/SpinningCube";
 import Test from "./scenes/Test";
 
 ReactDOM.render(
-    <Canvas3d scene={SpinningCube} />,
+    <Canvas3d scene={Test} />,
     document.getElementById("main")
 );
