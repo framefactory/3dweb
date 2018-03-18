@@ -7,7 +7,8 @@ export default class Test extends Scene
 {
     boxMeshes : THREE.Mesh[];
     gui: dat.GUI;
-
+    controls: THREE.TrackballControls;
+    
     speed: number;
     adjTime: number;
     rotationRadius: number;
@@ -18,6 +19,17 @@ export default class Test extends Scene
         this.adjTime = 0;
         const camera = new THREE.PerspectiveCamera(55, 1, 0.01, 100);
         camera.position.set(0, 0, 20);
+
+        this.controls = new THREE.TrackballControls(camera);
+        this.controls.rotateSpeed = 1.0;
+		this.controls.zoomSpeed = 1.2;
+		this.controls.panSpeed = 0.8;
+		this.controls.noZoom = false;
+		this.controls.noPan = false;
+		this.controls.staticMoving = true;
+		this.controls.dynamicDampingFactor = 0.3;
+		this.controls.keys = [ 65, 83, 68 ];
+		this.controls.addEventListener( 'change', this.render );
 
         const boxGeo = new THREE.SphereBufferGeometry(0.3,10,10);
         const boxMat = new THREE.MeshStandardMaterial({
