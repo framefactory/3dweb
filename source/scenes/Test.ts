@@ -22,6 +22,9 @@ export default class Test extends Scene
         camera.position.set(0, 0, 20);
 
         this.controls = new THREE.OrbitControls(camera);
+        this.controls.enableRotate = true;
+        this.controls.autoRotate = true;
+        this.controls.autoRotateSpeed = 1;
         //this.controls.target.set( 0, 1, 0 );
 
         const boxGeo = new THREE.SphereBufferGeometry(0.3,10,10);
@@ -63,6 +66,7 @@ export default class Test extends Scene
 
     update(time: number, delta: number)
     {
+        this.controls.update();
         this.adjTime += this.speed*delta;
 
         for (let i = 0; i<100; ++i){
