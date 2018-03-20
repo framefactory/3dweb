@@ -9,6 +9,7 @@ export default class Test extends Scene
     boxMeshes : THREE.Mesh[];
     gui: dat.GUI;
     controls: THREE.OrbitControls;
+    camera: THREE.PerspectiveCamera;
 
     speed: number;
     adjTime: number;
@@ -18,14 +19,13 @@ export default class Test extends Scene
     {
         scene.background = new THREE.Color("black");
         this.adjTime = 0;
-        const camera = new THREE.PerspectiveCamera(55, 1, 0.01, 100);
-        camera.position.set(0, 0, 20);
+        this.camera = new THREE.PerspectiveCamera(55, 1, 0.01, 100);
+        this.camera.position.set(0, 0, 20);
 
-        this.controls = new THREE.OrbitControls(camera);
-        this.controls.enableRotate = true;
+        this.controls = new THREE.OrbitControls(this.camera);
         this.controls.autoRotate = true;
         this.controls.autoRotateSpeed = 1;
-        //this.controls.target.set( 0, 1, 0 );
+        this.controls.target.set( 0, 1, 0 );
 
         const boxGeo = new THREE.SphereBufferGeometry(0.3,10,10);
         const boxMat = new THREE.MeshStandardMaterial({
@@ -55,25 +55,29 @@ export default class Test extends Scene
 
         this.gui = new dat.GUI();
         this.speed = 0.1;
-        this.gui.add(this, "speed", 0, 1, 0.001);
+        this.gui.add(this, "speed", 0, 0.3, 0.001);
 
         this.rotationRadius = 1;
         this.gui.add(this, "rotationRadius", 0, 5, 0.05);
         
         console.log("hallo stadt");
-        return camera;
+        return this.camera;
     }
 
     update(time: number, delta: number)
     {
-        this.controls.update();
         this.adjTime += this.speed*delta;
+
+        console.log(this.adjTime);
+        console.log(this.rotationRadius);
 
         for (let i = 0; i<100; ++i){
 
             this.boxMeshes[i].position.y = this.rotationRadius*Math.sin(i*this.adjTime+i);
             this.boxMeshes[i].position.z = this.rotationRadius*Math.cos(i*this.adjTime+i);
         }
+    //this.camera.updateMatrix();
+    this.controls.update();
 
     }
 
