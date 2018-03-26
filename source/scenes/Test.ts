@@ -3,8 +3,37 @@ import "../../node_modules/three/examples/js/controls/OrbitControls";
 import Scene from "./Scene";
 
 import dat from "dat.gui/build/dat.gui.module";
-import { WebGLBufferRenderer } from "three";
+import { WebGLBufferRenderer, Camera, Vector3 } from "three";
 import { STATUS_CODES } from "http";
+
+class Fish{
+    position : THREE.Vector3;
+    speed: THREE.Vector3;
+    target : THREE.Vector3;
+
+    damping: number;
+    maxVel : number;
+
+    smell(food : THREE.Vector3[], position : THREE.Vector3){
+        let dist = THREE.Vector3[food.length];
+        food.forEach(function(value : Vector3, index : number) {
+            dist[index] = value.sub(position);
+        });
+    }
+
+    moveToTarget(target : THREE.Vector3, position : THREE.Vector3, speed : THREE.Vector3){
+        let vec = new THREE.Vector3;
+        vec = target.sub(position);
+        vec.normalize;
+        vec.multiplyScalar(this.maxVel);
+        this.speed = vec;
+    }
+
+    move(speed : THREE.Vector3){
+        this.position.add(speed.multiplyScalar(this.damping));
+    }
+    
+}
 
 export default class Test extends Scene
 {
@@ -26,12 +55,14 @@ export default class Test extends Scene
 
         this.controls = new THREE.OrbitControls(this.camera);
         this.controls.autoRotate = true;
-        this.controls.autoRotateSpeed = 4;
+        this.controls.autoRotateSpeed = 1;
         this.controls.enableRotate = true;
         this.controls.enableZoom = true;
         this.controls.enablePan = true;
-        this.controls.rotateSpeed = 0.0001;
+        this.controls.rotateSpeed = 0.00000001;
         this.controls.enableKeys = true;
+        this.controls.target = new THREE.Vector3(1,0,0);
+        this.controls.enableDamping = true;
 
         const boxGeo = new THREE.SphereBufferGeometry(0.3,10,10);
         const boxMat = new THREE.MeshStandardMaterial({
