@@ -3,6 +3,8 @@ import "../../node_modules/three/examples/js/controls/OrbitControls";
 import Scene from "./Scene";
 
 import dat from "dat.gui/build/dat.gui.module";
+import { WebGLBufferRenderer } from "three";
+import { STATUS_CODES } from "http";
 
 export default class Test extends Scene
 {
@@ -24,8 +26,12 @@ export default class Test extends Scene
 
         this.controls = new THREE.OrbitControls(this.camera);
         this.controls.autoRotate = true;
-        this.controls.autoRotateSpeed = 1;
-        this.controls.target.set( 0, 1, 0 );
+        this.controls.autoRotateSpeed = 4;
+        this.controls.enableRotate = true;
+        this.controls.enableZoom = true;
+        this.controls.enablePan = true;
+        this.controls.rotateSpeed = 0.0001;
+        this.controls.enableKeys = true;
 
         const boxGeo = new THREE.SphereBufferGeometry(0.3,10,10);
         const boxMat = new THREE.MeshStandardMaterial({
@@ -66,19 +72,17 @@ export default class Test extends Scene
 
     update(time: number, delta: number)
     {
+        //this.controls.addEventListener('change',this.render  );
+        this.controls.update();
+
         this.adjTime += this.speed*delta;
 
-        console.log(this.adjTime);
-        console.log(this.rotationRadius);
+        console.log(this.camera.position);
 
         for (let i = 0; i<100; ++i){
 
             this.boxMeshes[i].position.y = this.rotationRadius*Math.sin(i*this.adjTime+i);
             this.boxMeshes[i].position.z = this.rotationRadius*Math.cos(i*this.adjTime+i);
         }
-    //this.camera.updateMatrix();
-    this.controls.update();
-
     }
-
 }
