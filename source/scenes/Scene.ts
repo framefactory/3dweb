@@ -27,11 +27,7 @@ export default class Scene
         if (!delayStart) {
             this.camera = this.start(this.scene);
 <<<<<<< HEAD
-<<<<<<< HEAD
     }
-=======
-        }
->>>>>>> parent of ae51cf4... Merge branch 'master' of https://github.com/framelab/parcel-3d-template
 =======
         }
 >>>>>>> parent of ae51cf4... Merge branch 'master' of https://github.com/framelab/parcel-3d-template
@@ -88,16 +84,10 @@ export default class Scene
             const camera = this.camera as THREE.OrthographicCamera;
             // TODO: update aspect
 <<<<<<< HEAD
-<<<<<<< HEAD
     }
     }
     }
 
-=======
-        }
-    }
-}
->>>>>>> parent of ae51cf4... Merge branch 'master' of https://github.com/framelab/parcel-3d-template
 =======
         }
     }
