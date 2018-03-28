@@ -17,7 +17,6 @@ export default class Scene
 
     constructor(delayStart: boolean = false)
     {
-        this.scene = new THREE.Scene();
         this.camera = null;
         this.scene = new THREE.Scene();
         this.startTime = Date.now() * 0.001;
@@ -27,7 +26,11 @@ export default class Scene
 
         if (!delayStart) {
             this.camera = this.start(this.scene);
+<<<<<<< HEAD
     }
+=======
+        }
+>>>>>>> parent of ae51cf4... Merge branch 'master' of https://github.com/framelab/parcel-3d-template
     }
 
     /**
@@ -80,7 +83,13 @@ export default class Scene
         else if (this.camera.type === "OrthographicCamera") {
             const camera = this.camera as THREE.OrthographicCamera;
             // TODO: update aspect
+<<<<<<< HEAD
     }
     }
     }
 
+=======
+        }
+    }
+}
+>>>>>>> parent of ae51cf4... Merge branch 'master' of https://github.com/framelab/parcel-3d-template

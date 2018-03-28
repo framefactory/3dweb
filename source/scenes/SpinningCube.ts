@@ -27,7 +27,7 @@ export default class SpinningCube extends Scene
      * Called once before rendering starts. Set up your scene content here.
      * @param scene The internal Three.js scene. Attach all scene content to this object.
      */
-    protected setup(scene: THREE.Scene): THREE.Camera
+    start(scene: THREE.Scene): THREE.Camera
     {
         // Create camera
 
@@ -67,7 +67,7 @@ export default class SpinningCube extends Scene
         this.gui = new dat.GUI();
 
         this.color = "#ffffff";
-        this.gui.addColor(this, "color");
+        this.gui.addColor(this, "color")
 
         this.speed = 0.5;
         this.gui.add(this, "speed", 0, 1, 0.01);
@@ -81,7 +81,7 @@ export default class SpinningCube extends Scene
      * @param time The time since rendering has started in secods.
      * @param delta The time between this frame and the previous frame.
      */
-    protected update(time: number, delta: number)
+    update(time: number, delta: number)
     {
         this.box.rotateX(2 * this.speed * delta);
         this.box.rotateY(1.3 * this.speed * delta);
