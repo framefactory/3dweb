@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import "../../node_modules/three/examples/js/controls/OrbitControls";
-import Scene from "./Scene";
+
+import OrbitControllerScene from "./OrbitControllerScene";
 
 import dat from "dat.gui/build/dat.gui.module";
 import { WebGLBufferRenderer, Camera, Vector3 } from "three";
@@ -70,34 +70,24 @@ class Fish extends Particle{
     }
 }
 
-export default class Test extends Scene
+export default class Test extends OrbitControllerScene
 {
     boxMeshes : THREE.Mesh[];
     gui: dat.GUI;
     controls: THREE.OrbitControls;
-    camera: THREE.PerspectiveCamera;
 
     speed: number;
     adjTime: number;
     rotationRadius: number;
 
-    start(scene: THREE.Scene): THREE.Camera
+    setup(scene: THREE.Scene): THREE.Camera
     {
+        const camera = super.setup(scene, new THREE.Vector3(0, 0, 20));
+
         scene.background = new THREE.Color("black");
         this.adjTime = 0;
-        this.camera = new THREE.PerspectiveCamera(55, 1, 0.01, 100);
-        this.camera.position.set(0, 0, 20);
-
-        this.controls = new THREE.OrbitControls(this.camera);
-        this.controls.autoRotate = true;
-        this.controls.autoRotateSpeed = 1;
-        this.controls.enableRotate = true;
-        this.controls.enableZoom = true;
-        this.controls.enablePan = true;
-        this.controls.rotateSpeed = 0.00000001;
-        this.controls.enableKeys = true;
-        this.controls.target = new THREE.Vector3(1,0,0);
-        this.controls.enableDamping = true;
+        //this.camera = new THREE.PerspectiveCamera(55, 1, 0.01, 100);
+        //this.camera.position.set(0, 0, 20);
 
         const boxGeo = new THREE.SphereBufferGeometry(0.3,10,10);
         const boxMat = new THREE.MeshStandardMaterial({
@@ -133,17 +123,14 @@ export default class Test extends Scene
         this.gui.add(this, "rotationRadius", 0, 5, 0.05);
         
         console.log("hallo stadt");
-        return this.camera;
+        return camera;
     }
 
     update(time: number, delta: number)
     {
-        //this.controls.addEventListener('change',this.render  );
-        this.controls.update();
+        super.update(time, delta);
 
         this.adjTime += this.speed*delta;
-
-        console.log(this.camera.position);
 
         for (let i = 0; i<100; ++i){
 
