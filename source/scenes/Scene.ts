@@ -6,70 +6,63 @@
  */
 
 import * as THREE from "three";
-import ManipSource from "../helpers/ManipSource";
-
-////////////////////////////////////////////////////////////////////////////////
 
 export default class Scene
 {
-    protected scene: THREE.Scene;
     protected camera: THREE.Camera;
-    protected renderer: THREE.WebGLRenderer;
-    protected manip: ManipSource;
-
-    protected loadingManager: THREE.LoadingManager;
-    protected isInitialized: boolean;
+    protected scene: THREE.Scene;
+    protected isStarted: boolean;
     protected startTime: number;
     protected lastTime: number;
 
-    constructor()
+    constructor(delayStart: boolean = false)
     {
-        this.scene = new THREE.Scene();
         this.camera = null;
-
+        this.scene = new THREE.Scene();
         this.startTime = Date.now() * 0.001;
         this.lastTime = 0;
 
-        this.isInitialized = false;
+        this.isStarted = !delayStart;
 
-        this.onLoadingStart = this.onLoadingStart.bind(this);
-        this.onLoadingProgress = this.onLoadingProgress.bind(this);
-        this.onLoadingCompleted = this.onLoadingCompleted.bind(this);
-        this.onLoadingError = this.onLoadingError.bind(this);
-
-        const manager = this.loadingManager = new THREE.LoadingManager();
-        manager.onStart = this.onLoadingStart;
-        manager.onProgress = this.onLoadingProgress;
-        manager.onLoad = this.onLoadingCompleted;
-        manager.onError = this.onLoadingError;
+        if (!delayStart) {
+            this.camera = this.start(this.scene);
+    }
     }
 
-    initialize(renderer: THREE.WebGLRenderer, manip?: ManipSource)
+    /**
+     * Called once before rendering starts. Override and set up your scene content in this method.
+     * @param scene The internal Three.js scene. Attach all scene content to this object.
+     */
+    protected start(scene: THREE.Scene): THREE.Camera
     {
-        if (!this.isInitialized) {
-            this.renderer = renderer;
-            this.manip = manip;
-
-            this.camera = this.setup(this.scene);
-            this.isInitialized = true;
-        }
+        return new THREE.PerspectiveCamera(55, 1, 0.01, 100);
     }
 
-    render()
+    /**
+     * Called once per frame right before rendering. Update animations and parameters here.
+     * @param time The time since rendering has started in secods.
+     * @param delta The time between this frame and the previous frame.
+     */
+    update(time: number, delta: number)
     {
-        if (!this.isInitialized) {
-            throw new Error("Scene.render - can't render, scene not initialized");
+    }
+
+    render(renderer: THREE.WebGLRenderer)
+    {
+        if (!this.isStarted) {
+            this.camera = this.start(this.scene);
+            this.isStarted = true;
         }
 
         if (!this.camera) {
-            throw new Error("Scene.render - can't render, camera not defined");
+            throw new Error("Scene.render - can't render, no camera initialized");
         }
 
         const time = Date.now() * 0.001 - this.startTime;
         this.update(time, time - this.lastTime);
         this.lastTime = time;
 
-        this.renderer.render(this.scene, this.camera);
+        renderer.render(this.scene, this.camera);
     }
 
     resize(width: number, height: number)
@@ -78,47 +71,15 @@ export default class Scene
             return;
         }
 
-        const aspect = width / height;
-
         if (this.camera.type === "PerspectiveCamera") {
             const camera = this.camera as THREE.PerspectiveCamera;
-            camera.aspect = aspect;
+            camera.aspect = width / height;
             camera.updateProjectionMatrix();
         }
-        else if (this.camera.type = "OrthographicCamera") {
+        else if (this.camera.type === "OrthographicCamera") {
             const camera = this.camera as THREE.OrthographicCamera;
-            camera.left = camera.bottom * aspect;
-            camera.right = camera.top * aspect;
-            camera.updateProjectionMatrix();
-        }
+            // TODO: update aspect
+    }
+    }
     }
 
-    protected setup(scene: THREE.Scene): THREE.Camera
-    {
-        return new THREE.PerspectiveCamera(55, 1, 0.01, 100);
-    }
-
-    protected update(time: number, delta: number)
-    {
-    }
-
-    protected onLoadingStart()
-    {
-        console.log("Loading files...");
-    }
-
-    protected onLoadingProgress(url, itemsLoaded, itemsTotal)
-    {
-        console.log(`Loaded ${itemsLoaded} of ${itemsTotal} files: ${url}`);
-    }
-
-    protected onLoadingCompleted()
-    {
-        console.log("Loading completed");
-    }
-
-    protected onLoadingError()
-    {
-        console.error(`Loading error`);
-    }
-}
