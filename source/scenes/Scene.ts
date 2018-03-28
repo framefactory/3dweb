@@ -17,6 +17,7 @@ export default class Scene
 
     constructor(delayStart: boolean = false)
     {
+        this.scene = new THREE.Scene();
         this.camera = null;
         this.scene = new THREE.Scene();
         this.startTime = Date.now() * 0.001;

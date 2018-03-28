@@ -5,60 +5,20 @@ import Scene from "./Scene";
 import dat from "dat.gui/build/dat.gui.module";
 import { WebGLBufferRenderer, Camera, Vector3 } from "three";
 import { STATUS_CODES } from "http";
-import { arch } from "os";
 
-class Particle{
-    readonly damping = 0.99;
-
+class Fish{
     position : THREE.Vector3;
     speed: THREE.Vector3;
+    target : THREE.Vector3;
 
-    updatePosition(position : THREE.Vector3, speed : THREE.Vector3){
-        this.position.add(speed.multiplyScalar(this.damping));
-    }
-}
-
-class Food extends Particle{
-
-}
-
-function bubbleSort(array: number[], food : THREE.Vector3[])
-{
-    let l = array.length;
-    for (let i = 0; i<l-1; ++i)
-    {
-        for (let j = 0; j<l-i-1; ++j)
-        {
-            if( array[j] > array[j+1])
-            {
-
-                let temp = array[j];
-                array[j + 1] = temp;
-
-                let temp_ = food[j];
-                food[j + 1] = temp_;
-            }
-        }
-    }
-}
-  
-class Fish extends Particle{
-
-    readonly maxVel = 0.1;
-
-    live(target : THREE.Vector3[]){
-        this.smell(target, this.position);
-    }
+    damping: number;
+    maxVel : number;
 
     smell(food : THREE.Vector3[], position : THREE.Vector3){
         let dist = THREE.Vector3[food.length];
         food.forEach(function(value : Vector3, index : number) {
             dist[index] = value.sub(position);
         });
-        dist.sort(function(a,b){
-            return a - b;
-        });
-
     }
 
     moveToTarget(target : THREE.Vector3, position : THREE.Vector3, speed : THREE.Vector3){
@@ -68,6 +28,11 @@ class Fish extends Particle{
         vec.multiplyScalar(this.maxVel);
         this.speed = vec;
     }
+
+    move(speed : THREE.Vector3){
+        this.position.add(speed.multiplyScalar(this.damping));
+    }
+    
 }
 
 export default class Test extends Scene
@@ -102,7 +67,7 @@ export default class Test extends Scene
         const boxGeo = new THREE.SphereBufferGeometry(0.3,10,10);
         const boxMat = new THREE.MeshStandardMaterial({
             color: "#ffffff",
-            metalness: 0.3,
+            metalness: 0,
             roughness: 0.5,
         });
 
@@ -126,8 +91,8 @@ export default class Test extends Scene
         scene.add(light2);
 
         this.gui = new dat.GUI();
-        this.speed = 0.05;
-        this.gui.add(this, "speed", 0, 0.1, 0.001);
+        this.speed = 0.1;
+        this.gui.add(this, "speed", 0, 0.3, 0.001);
 
         this.rotationRadius = 1;
         this.gui.add(this, "rotationRadius", 0, 5, 0.05);
